@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import { publicNav } from "@/config/navigation";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
-import { Menu, Building2 } from "lucide-react";
+import { Menu } from "lucide-react";
 
 export function PublicNavbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -20,73 +20,89 @@ export function PublicNavbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const solid = scrolled || !isHome;
+
   return (
     <header
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-        scrolled || !isHome
-          ? "bg-white/95 backdrop-blur-md shadow-sm border-b"
+        "fixed top-0 left-0 right-0 z-50 transition-all duration-500",
+        solid
+          ? "bg-white/90 backdrop-blur-md border-b border-stone-100 shadow-soft"
           : "bg-transparent"
       )}
     >
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6 sm:px-8">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2">
+        <Link href="/" className="flex items-center gap-2.5">
           <div className={cn(
-            "flex h-8 w-8 items-center justify-center rounded-lg transition-colors",
-            scrolled || !isHome ? "bg-primary text-primary-foreground" : "bg-white/20 text-white"
+            "flex h-8 w-8 items-center justify-center rounded-none text-[11px] font-display font-bold transition-all duration-300",
+            solid
+              ? "bg-forest text-white"
+              : "bg-white/10 backdrop-blur-md border border-white/20 text-white"
           )}>
-            <Building2 className="h-4 w-4" />
+            E
           </div>
           <span className={cn(
-            "font-serif text-xl font-bold transition-colors",
-            scrolled || !isHome ? "text-foreground" : "text-white"
+            "font-display text-sm tracking-[0.2em] transition-colors duration-300",
+            solid ? "text-forest" : "text-white"
           )}>
-            ErreBook
+            ERREBOOK
           </span>
         </Link>
 
         {/* Desktop nav */}
-        <nav className="hidden md:flex items-center gap-6">
+        <nav className="hidden md:flex items-center gap-8">
           {publicNav.map((item) => (
             <Link
               key={item.href}
               href={item.href}
               className={cn(
-                "text-sm font-medium transition-colors hover:opacity-80",
-                scrolled || !isHome ? "text-foreground" : "text-white"
+                "text-[11px] font-medium uppercase tracking-[0.2em] transition-colors duration-300",
+                solid ? "text-forest/50 hover:text-forest" : "text-white/60 hover:text-white",
+                pathname === item.href && (solid ? "text-forest" : "text-white")
               )}
             >
               {item.title}
             </Link>
           ))}
-          <Button asChild size="sm" className="bg-primary hover:bg-primary/90">
-            <Link href="/properties">Prenota Ora</Link>
-          </Button>
+          <Link
+            href="/properties"
+            className="bg-terra px-5 py-2 text-[10px] font-semibold uppercase tracking-[0.25em] text-white transition-all duration-300 hover:bg-terra-hover hover:-translate-y-0.5"
+          >
+            Prenota
+          </Link>
         </nav>
 
-        {/* Mobile menu */}
+        {/* Mobile */}
         <Sheet>
           <SheetTrigger asChild>
             <Button variant="ghost" size="icon" className="md:hidden">
-              <Menu className={cn("h-5 w-5", !scrolled && isHome && "text-white")} />
+              <Menu className={cn("h-5 w-5", solid ? "text-forest" : "text-white")} />
             </Button>
           </SheetTrigger>
-          <SheetContent side="right">
-            <SheetTitle className="sr-only">Menu di navigazione</SheetTitle>
-            <nav className="flex flex-col gap-4 mt-8">
+          <SheetContent side="right" className="w-72 bg-forest border-forest-light">
+            <SheetTitle className="sr-only">Menu</SheetTitle>
+            <nav className="flex flex-col gap-1 mt-12">
               {publicNav.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="text-lg font-medium"
+                  className={cn(
+                    "px-4 py-3 text-[11px] font-medium uppercase tracking-[0.2em] text-white/50 transition-colors hover:text-white",
+                    pathname === item.href && "text-terra"
+                  )}
                 >
                   {item.title}
                 </Link>
               ))}
-              <Button asChild className="mt-4">
-                <Link href="/properties">Prenota Ora</Link>
-              </Button>
+              <div className="mx-4 mt-6">
+                <Link
+                  href="/properties"
+                  className="block bg-terra px-4 py-3 text-center text-[10px] font-semibold uppercase tracking-[0.25em] text-white hover:bg-terra-hover"
+                >
+                  Prenota Ora
+                </Link>
+              </div>
             </nav>
           </SheetContent>
         </Sheet>

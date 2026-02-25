@@ -14,16 +14,16 @@ import { formatCurrency } from "@/lib/format";
 const chartConfig = {
   revenue: {
     label: "Ricavi",
-    color: "#C75C2E",
+    color: "#C47F5A",
   },
 } satisfies ChartConfig;
 
 export function RevenueChart() {
   return (
-    <Card>
+    <Card className="shadow-card border-stone-100">
       <CardHeader>
-        <CardTitle>Andamento Ricavi</CardTitle>
-        <CardDescription>Ricavi mensili degli ultimi 12 mesi</CardDescription>
+        <CardTitle className="text-base font-semibold">Andamento Ricavi</CardTitle>
+        <CardDescription className="text-xs">Ricavi mensili degli ultimi 12 mesi</CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig} className="h-[300px] w-full">
@@ -33,38 +33,15 @@ export function RevenueChart() {
           >
             <defs>
               <linearGradient id="revenueGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#C75C2E" stopOpacity={0.3} />
-                <stop offset="100%" stopColor="#C75C2E" stopOpacity={0.02} />
+                <stop offset="0%" stopColor="#C47F5A" stopOpacity={0.2} />
+                <stop offset="100%" stopColor="#C47F5A" stopOpacity={0.01} />
               </linearGradient>
             </defs>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} />
-            <XAxis
-              dataKey="month"
-              tickLine={false}
-              axisLine={false}
-              tickMargin={8}
-              tickFormatter={(value: string) => value.slice(0, 3)}
-            />
-            <YAxis
-              tickLine={false}
-              axisLine={false}
-              tickMargin={8}
-              tickFormatter={(value: number) => formatCurrency(value)}
-            />
-            <ChartTooltip
-              content={
-                <ChartTooltipContent
-                  formatter={(value) => formatCurrency(value as number)}
-                />
-              }
-            />
-            <Area
-              type="monotone"
-              dataKey="revenue"
-              stroke="#C75C2E"
-              strokeWidth={2}
-              fill="url(#revenueGradient)"
-            />
+            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E7E5E4" />
+            <XAxis dataKey="month" tickLine={false} axisLine={false} tickMargin={8} tickFormatter={(v: string) => v.slice(0, 3)} fontSize={11} />
+            <YAxis tickLine={false} axisLine={false} tickMargin={8} tickFormatter={(v: number) => formatCurrency(v)} fontSize={11} />
+            <ChartTooltip content={<ChartTooltipContent formatter={(v) => formatCurrency(v as number)} />} />
+            <Area type="monotone" dataKey="revenue" stroke="#C47F5A" strokeWidth={2} fill="url(#revenueGradient)" />
           </AreaChart>
         </ChartContainer>
       </CardContent>

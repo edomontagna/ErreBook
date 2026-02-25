@@ -24,16 +24,16 @@ export function StarRating({
             size={size}
             className={
               i < Math.floor(rating)
-                ? "fill-amber-400 text-amber-400"
+                ? "fill-terra text-terra"
                 : i < rating
-                  ? "fill-amber-400/50 text-amber-400"
-                  : "text-gray-300"
+                  ? "fill-terra/50 text-terra"
+                  : "text-stone-300"
             }
           />
         ))}
       </div>
       {showValue && (
-        <span className="text-sm font-medium">{rating.toFixed(rating % 1 === 0 ? 0 : 2)}</span>
+        <span className="text-sm font-medium">{rating.toFixed(rating % 1 === 0 ? 0 : 1)}</span>
       )}
       {reviewCount !== undefined && (
         <span className="text-sm text-muted-foreground">({reviewCount})</span>

@@ -1,54 +1,103 @@
 "use client";
 
-import { motion } from "motion/react";
-import { SearchBar } from "@/components/public/search-bar";
+import { useRef } from "react";
+import Image from "next/image";
+import { motion, useScroll, useTransform } from "motion/react";
+import { ChevronDown } from "lucide-react";
 
 export function HeroSection() {
+  const ref = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
+  const imgY = useTransform(scrollYProgress, [0, 1], ["0%", "20%"]);
+  const textY = useTransform(scrollYProgress, [0, 1], ["0%", "40%"]);
+  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
+
   return (
-    <section className="relative flex min-h-screen items-center justify-center overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-stone-900">
-      {/* Decorative overlay patterns */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_rgba(196,146,47,0.15),_transparent_60%)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,_rgba(238,115,64,0.1),_transparent_60%)]" />
+    <section ref={ref} className="relative h-[85vh] overflow-hidden sm:h-screen">
+      {/* Image with parallax — optimized size */}
+      <motion.div className="absolute inset-0" style={{ y: imgY }}>
+        <Image
+          src="https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1400&h=900&fit=crop&q=80"
+          alt="Dolomiti"
+          fill
+          className="object-cover"
+          sizes="100vw"
+          priority
+          quality={85}
+        />
+      </motion.div>
 
-      <div className="relative z-10 mx-auto w-full max-w-7xl px-4 py-32 sm:px-6 lg:px-8">
-        <div className="flex flex-col items-center text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut" as const }}
-          >
-            <h1 className="font-serif text-4xl font-bold leading-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
-              Scopri il Tuo Prossimo
-              <br />
-              <span className="bg-gradient-to-r from-amber-300 to-orange-400 bg-clip-text text-transparent">
-                Soggiorno
-              </span>
-            </h1>
-          </motion.div>
+      {/* Overlay layers for depth */}
+      <div className="absolute inset-0 bg-forest/45" />
+      <div className="absolute inset-0 bg-gradient-to-b from-forest/20 via-transparent to-forest/50" />
 
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" as const }}
-            className="mt-6 max-w-2xl text-lg text-white/70 sm:text-xl"
-          >
-            Appartamenti unici tra le Dolomiti, Milano e Verona.
-            Prenota la tua prossima esperienza con ErreBook.
-          </motion.p>
+      {/* Noise for texture */}
+      <div className="noise absolute inset-0" />
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" as const }}
-            className="mt-12 w-full max-w-4xl"
-          >
-            <SearchBar />
-          </motion.div>
+      {/* Content */}
+      <motion.div
+        className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center"
+        style={{ y: textY, opacity }}
+      >
+        <motion.p
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
+          className="label-luxury !text-terra-light/80"
+        >
+          Luxury Hospitality
+        </motion.p>
+
+        <motion.h1
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.7, ease: [0.25, 0.1, 0.25, 1] }}
+          className="mt-5 heading-display text-[clamp(2.5rem,8vw,7rem)] leading-[0.92] text-white"
+        >
+          Scopri il Tuo
+          <br />
+          <span className="font-serif italic font-light text-terra-light">Soggiorno</span>
+        </motion.h1>
+
+        <motion.div
+          initial={{ scaleX: 0 }}
+          animate={{ scaleX: 1 }}
+          transition={{ duration: 0.6, delay: 1.3, ease: [0.25, 0.1, 0.25, 1] }}
+          className="mt-7 h-px w-16 origin-center bg-terra/60"
+        />
+
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8, delay: 1.6 }}
+          className="mt-6 max-w-sm text-[13px] font-light leading-relaxed tracking-wide text-white/45 sm:text-sm"
+        >
+          Appartamenti esclusivi tra le Dolomiti, Milano e Verona
+        </motion.p>
+
+        <motion.a
+          href="/properties"
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 2 }}
+          className="mt-9 bg-terra px-7 py-3 text-[10px] font-semibold uppercase tracking-[0.3em] text-white transition-all duration-300 hover:bg-terra-hover active:scale-[0.97]"
+        >
+          Esplora le Proprietà
+        </motion.a>
+      </motion.div>
+
+      {/* Scroll hint */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 3, duration: 1 }}
+        className="absolute bottom-8 left-1/2 z-10 -translate-x-1/2"
+      >
+        <div className="flex flex-col items-center gap-2">
+          <span className="text-[8px] font-semibold uppercase tracking-[0.5em] text-white/20">Scroll</span>
+          <ChevronDown className="h-3.5 w-3.5 animate-float text-white/15" />
         </div>
-      </div>
-
-      {/* Bottom fade for smooth transition to next section */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent" />
+      </motion.div>
     </section>
   );
 }

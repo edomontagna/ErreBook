@@ -1,91 +1,95 @@
 "use client";
 
-import { motion } from "motion/react";
-import { Quote } from "lucide-react";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "motion/react";
 import { reviews } from "@/data/reviews";
 import { properties } from "@/data/properties";
-import { StarRating } from "@/components/shared/star-rating";
-import { Card, CardContent } from "@/components/ui/card";
+import { Star } from "lucide-react";
 
-// Pick 4 diverse, high-quality reviews
 const selectedReviews = [reviews[0], reviews[2], reviews[7], reviews[9]];
 
 function getPropertyName(propertyId: string): string {
   return properties.find((p) => p.id === propertyId)?.name ?? "";
 }
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.12 },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 24 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.5, ease: "easeOut" as const },
-  },
-};
-
 export function Testimonials() {
-  return (
-    <section className="bg-muted/40 py-20 sm:py-28">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.6 }}
-          className="text-center"
-        >
-          <h2 className="font-serif text-3xl font-bold sm:text-4xl">
-            Cosa Dicono i Nostri Ospiti
-          </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">
-            Le esperienze autentiche di chi ha scelto ErreBook per le proprie
-            vacanze.
-          </p>
-        </motion.div>
+  const [active, setActive] = useState(0);
 
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-50px" }}
-          className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4"
-        >
-          {selectedReviews.map((review) => (
-            <motion.div key={review.id} variants={itemVariants}>
-              <Card className="h-full">
-                <CardContent className="flex h-full flex-col justify-between pt-2">
-                  <div>
-                    <Quote className="mb-3 h-8 w-8 text-primary/20" />
-                    <p className="text-sm leading-relaxed text-muted-foreground">
-                      &ldquo;{review.comment}&rdquo;
-                    </p>
-                  </div>
-                  <div className="mt-6 border-t pt-4">
-                    <div className="font-semibold">{review.guest.name}</div>
-                    <div className="mt-1 text-xs text-muted-foreground">
-                      {getPropertyName(review.propertyId)}
-                    </div>
-                    <div className="mt-2">
-                      <StarRating
-                        rating={review.rating}
-                        size={14}
-                        showValue={false}
-                      />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+  useEffect(() => {
+    const timer = setInterval(() => setActive((p) => (p + 1) % selectedReviews.length), 6000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const review = selectedReviews[active];
+
+  return (
+    <section className="relative bg-forest py-28 sm:py-36 overflow-hidden">
+      {/* Noise texture */}
+      <div className="noise absolute inset-0" />
+
+      <div className="relative z-10 mx-auto max-w-3xl px-6 sm:px-8 text-center">
+        <p className="label-luxury">Testimonianze</p>
+
+        {/* Quote mark */}
+        <div className="mt-6 font-serif text-[7rem] leading-none text-terra/10 select-none sm:text-[10rem]">
+          &ldquo;
+        </div>
+
+        {/* Quote text */}
+        <div className="-mt-16 sm:-mt-24 min-h-[160px] sm:min-h-[130px]">
+          <AnimatePresence mode="wait">
+            <motion.p
+              key={review.id}
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -16 }}
+              transition={{ duration: 0.5 }}
+              className="font-serif text-lg font-light italic leading-relaxed text-white/50 sm:text-xl sm:leading-relaxed"
+            >
+              {review.comment}
+            </motion.p>
+          </AnimatePresence>
+        </div>
+
+        {/* Author */}
+        <div className="mt-8">
+          <div className="mx-auto h-px w-8 bg-terra/25" />
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={review.id + "-a"}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.4 }}
+              className="mt-5"
+            >
+              <div className="text-xs font-semibold uppercase tracking-[0.2em] text-white/60">
+                {review.guest.name}
+              </div>
+              <div className="mt-1 text-[10px] text-white/25">
+                {getPropertyName(review.propertyId)}
+              </div>
+              <div className="mt-2.5 flex items-center justify-center gap-0.5">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <Star key={i} size={11} className={i < review.rating ? "fill-terra text-terra" : "text-white/10"} />
+                ))}
+              </div>
             </motion.div>
+          </AnimatePresence>
+        </div>
+
+        {/* Dots */}
+        <div className="mt-8 flex items-center justify-center gap-2.5">
+          {selectedReviews.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setActive(i)}
+              className={`rounded-full transition-all duration-500 ${
+                i === active ? "h-1.5 w-6 bg-terra" : "h-1.5 w-1.5 bg-white/15 hover:bg-white/25"
+              }`}
+            />
           ))}
-        </motion.div>
+        </div>
       </div>
     </section>
   );
