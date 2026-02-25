@@ -6,10 +6,13 @@ import { motion } from "motion/react";
 import { MapPin, ArrowRight, Star } from "lucide-react";
 import { properties } from "@/data/properties";
 import { formatCurrency } from "@/lib/format";
+import { useT } from "@/lib/i18n";
 
 const featured = properties.filter((p) => p.featured);
 
 export function FeaturedProperties() {
+  const { t } = useT();
+
   return (
     <section className="py-28 sm:py-36">
       <div className="mx-auto max-w-7xl px-6 sm:px-8">
@@ -22,16 +25,16 @@ export function FeaturedProperties() {
           className="flex items-end justify-between"
         >
           <div>
-            <p className="label-luxury">Selezione Esclusiva</p>
+            <p className="label-luxury">{t.featured.tag}</p>
             <h2 className="mt-3 font-serif text-2xl font-light tracking-tight sm:text-3xl lg:text-4xl">
-              Proprietà in Evidenza
+              {t.featured.title}
             </h2>
           </div>
           <Link
             href="/properties"
             className="hidden sm:flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.25em] text-terra hover:text-terra-hover transition-colors"
           >
-            Vedi Tutte <ArrowRight className="h-3 w-3" />
+            {t.featured.viewAll} <ArrowRight className="h-3 w-3" />
           </Link>
         </motion.div>
 
@@ -77,7 +80,7 @@ export function FeaturedProperties() {
                 {/* Content */}
                 <div className="absolute bottom-0 left-0 right-0 p-6">
                   <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-terra-light/80">
-                    {formatCurrency(p.pricing.basePrice)} / notte
+                    {formatCurrency(p.pricing.basePrice)} {t.featured.perNight}
                   </p>
                   <h3 className="mt-2 font-serif text-xl font-light text-white sm:text-2xl">
                     {p.name}
@@ -98,7 +101,7 @@ export function FeaturedProperties() {
             href="/properties"
             className="inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.25em] text-terra"
           >
-            Vedi Tutte le Proprietà <ArrowRight className="h-3 w-3" />
+            {t.featured.viewAllProperties} <ArrowRight className="h-3 w-3" />
           </Link>
         </div>
       </div>

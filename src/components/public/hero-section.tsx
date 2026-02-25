@@ -4,8 +4,10 @@ import { useRef } from "react";
 import Image from "next/image";
 import { motion, useScroll, useTransform } from "motion/react";
 import { ChevronDown } from "lucide-react";
+import { useT } from "@/lib/i18n";
 
 export function HeroSection() {
+  const { t } = useT();
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
   const imgY = useTransform(scrollYProgress, [0, 1], ["0%", "20%"]);
@@ -45,7 +47,7 @@ export function HeroSection() {
           transition={{ duration: 0.7, delay: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
           className="label-luxury !text-terra-light/80"
         >
-          Luxury Hospitality
+          {t.hero.tag}
         </motion.p>
 
         <motion.h1
@@ -54,9 +56,9 @@ export function HeroSection() {
           transition={{ duration: 1, delay: 0.7, ease: [0.25, 0.1, 0.25, 1] }}
           className="mt-5 heading-display text-[clamp(2.5rem,8vw,7rem)] leading-[0.92] text-white"
         >
-          Scopri il Tuo
+          {t.hero.title1}
           <br />
-          <span className="font-serif italic font-light text-terra-light">Soggiorno</span>
+          <span className="font-serif italic font-light text-terra-light">{t.hero.title2}</span>
         </motion.h1>
 
         <motion.div
@@ -72,7 +74,7 @@ export function HeroSection() {
           transition={{ duration: 0.8, delay: 1.6 }}
           className="mt-6 max-w-sm text-[13px] font-light leading-relaxed tracking-wide text-white/45 sm:text-sm"
         >
-          Appartamenti esclusivi tra le Dolomiti, Milano e Verona
+          {t.hero.subtitle}
         </motion.p>
 
         <motion.a
@@ -82,7 +84,7 @@ export function HeroSection() {
           transition={{ duration: 0.6, delay: 2 }}
           className="mt-9 bg-terra px-7 py-3 text-[10px] font-semibold uppercase tracking-[0.3em] text-white transition-all duration-300 hover:bg-terra-hover active:scale-[0.97]"
         >
-          Esplora le Proprietà
+          {t.hero.cta}
         </motion.a>
       </motion.div>
 
@@ -94,7 +96,7 @@ export function HeroSection() {
         className="absolute bottom-8 left-1/2 z-10 -translate-x-1/2"
       >
         <div className="flex flex-col items-center gap-2">
-          <span className="text-[8px] font-semibold uppercase tracking-[0.5em] text-white/20">Scroll</span>
+          <span className="text-[8px] font-semibold uppercase tracking-[0.5em] text-white/20">{t.hero.scroll}</span>
           <ChevronDown className="h-3.5 w-3.5 animate-float text-white/15" />
         </div>
       </motion.div>

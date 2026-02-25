@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { motion } from "motion/react";
 import { Award, Leaf, Heart, Building2, Users, Star, MapPin } from "lucide-react";
+import { useT } from "@/lib/i18n";
 
 function AnimatedCounter({ target, suffix = "" }: { target: number; suffix?: string }) {
   const [count, setCount] = useState(0);
@@ -24,20 +25,22 @@ function AnimatedCounter({ target, suffix = "" }: { target: number; suffix?: str
   return <span ref={ref}>{count}{suffix}</span>;
 }
 
-const stats = [
-  { value: 8, label: "Proprietà", icon: Building2 },
-  { value: 200, label: "Ospiti Soddisfatti", icon: Users, suffix: "+" },
-  { value: 4.9, label: "Valutazione Media", icon: Star, isDecimal: true },
-  { value: 3, label: "Destinazioni", icon: MapPin },
-];
-
-const values = [
-  { icon: Award, title: "Qualità", description: "Ogni proprietà viene selezionata con cura e mantenuta ai massimi standard per un'esperienza indimenticabile." },
-  { icon: Leaf, title: "Sostenibilità", description: "Promuoviamo pratiche sostenibili in ogni aspetto, dai prodotti locali alle nostre Green House." },
-  { icon: Heart, title: "Ospitalità", description: "Accoglienza calorosa, consigli personalizzati e attenzione ai dettagli rendono ogni visita speciale." },
-];
-
 export default function AboutPage() {
+  const { t } = useT();
+
+  const stats = [
+    { value: 8, label: t.about.stats.properties, icon: Building2 },
+    { value: 200, label: t.about.stats.happyGuests, icon: Users, suffix: "+" },
+    { value: 4.9, label: t.about.stats.avgRating, icon: Star, isDecimal: true },
+    { value: 3, label: t.about.stats.destinations, icon: MapPin },
+  ];
+
+  const values = [
+    { icon: Award, title: t.about.quality, description: t.about.qualityDesc },
+    { icon: Leaf, title: t.about.sustainability, description: t.about.sustainabilityDesc },
+    { icon: Heart, title: t.about.hospitality, description: t.about.hospitalityDesc },
+  ];
+
   return (
     <div className="min-h-screen">
       {/* Full-bleed hero */}
@@ -54,8 +57,8 @@ export default function AboutPage() {
         <div className="absolute inset-0 bg-forest/45" />
         <div className="noise absolute inset-0" />
         <div className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center">
-          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8, delay: 0.2 }} className="label-luxury !text-terra-light/80">La Nostra Storia</motion.p>
-          <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.4 }} className="mt-4 font-serif text-4xl font-light tracking-tight text-white sm:text-5xl lg:text-6xl">Chi Siamo</motion.h1>
+          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8, delay: 0.2 }} className="label-luxury !text-terra-light/80">{t.about.heroTag}</motion.p>
+          <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.4 }} className="mt-4 font-serif text-4xl font-light tracking-tight text-white sm:text-5xl lg:text-6xl">{t.about.heroTitle}</motion.h1>
           <motion.div initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ duration: 0.8, delay: 0.7 }} className="mt-4 h-px w-16 origin-center bg-terra" />
         </div>
       </div>
@@ -64,7 +67,7 @@ export default function AboutPage() {
       <section className="py-28 sm:py-36">
         <div className="mx-auto max-w-3xl px-6 sm:px-8 text-center">
           <motion.p initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 1 }} className="font-serif text-2xl font-light leading-relaxed tracking-tight text-foreground/70 sm:text-3xl sm:leading-relaxed">
-            ErreBook nasce dalla <span className="italic text-foreground">passione per l&apos;ospitalità</span> e dal desiderio di offrire esperienze autentiche in alcune delle destinazioni più <span className="text-terra">belle d&apos;Italia</span>.
+            {t.about.introP1} <span className="italic text-foreground">{t.about.introHighlight1}</span> {t.about.introP2} <span className="text-terra">{t.about.introHighlight2}</span>.
           </motion.p>
         </div>
       </section>
@@ -91,20 +94,20 @@ export default function AboutPage() {
         <div className="mx-auto max-w-7xl px-6 sm:px-8">
           <div className="grid items-center gap-20 lg:grid-cols-2">
             <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }}>
-              <p className="label-luxury">La Nostra Visione</p>
-              <h2 className="mt-4 font-serif text-3xl font-light tracking-tight lg:text-4xl">La Nostra Missione</h2>
+              <p className="label-luxury">{t.about.visionTag}</p>
+              <h2 className="mt-4 font-serif text-3xl font-light tracking-tight lg:text-4xl">{t.about.missionTitle}</h2>
               <div className="mt-4 h-px w-12 bg-terra/40" />
-              <p className="mt-8 leading-relaxed text-muted-foreground">Rendere ogni soggiorno un&apos;esperienza indimenticabile. Gestiamo personalmente ogni proprietà per garantire standard elevati e un servizio attento.</p>
-              <p className="mt-4 leading-relaxed text-muted-foreground">Dalle Dolomiti a Milano fino a Verona — comfort, posizione strategica e carattere unico.</p>
+              <p className="mt-8 leading-relaxed text-muted-foreground">{t.about.missionP1}</p>
+              <p className="mt-4 leading-relaxed text-muted-foreground">{t.about.missionP2}</p>
             </motion.div>
             <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8, delay: 0.2 }}>
               <div className="border border-border/60 p-8 sm:p-10">
                 <span className="font-serif text-5xl leading-none text-terra/20 select-none">&ldquo;</span>
                 <blockquote className="-mt-2 font-serif text-lg font-light italic leading-relaxed text-foreground/60 sm:text-xl">
-                  Ogni appartamento racconta una storia. Il nostro compito è assicurarci che ogni ospite diventi parte di quella storia.
+                  {t.about.quote}
                 </blockquote>
                 <div className="mt-6 h-px w-8 bg-terra/20" />
-                <div className="mt-4 text-xs font-medium uppercase tracking-[0.2em]">Il Team ErreBook</div>
+                <div className="mt-4 text-xs font-medium uppercase tracking-[0.2em]">{t.about.quoteAuthor}</div>
                 <div className="mt-1 text-[10px] tracking-wide text-muted-foreground">San Martino di Castrozza</div>
               </div>
             </motion.div>
@@ -116,8 +119,8 @@ export default function AboutPage() {
       <section className="relative bg-forest py-28 sm:py-40 noise">
         <div className="mx-auto max-w-7xl px-6 sm:px-8">
           <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }} className="text-center">
-            <p className="label-luxury">I Nostri Principi</p>
-            <h2 className="mt-6 font-serif text-3xl font-light tracking-tight text-canvas sm:text-4xl lg:text-5xl">I Nostri Valori</h2>
+            <p className="label-luxury">{t.about.valuesTag}</p>
+            <h2 className="mt-6 font-serif text-3xl font-light tracking-tight text-canvas sm:text-4xl lg:text-5xl">{t.about.valuesTitle}</h2>
             <div className="mx-auto mt-6 h-px w-16 bg-terra/30" />
           </motion.div>
           <div className="mt-20 grid gap-px border border-white/[0.06] md:grid-cols-3">

@@ -14,6 +14,7 @@ import { useProperties } from "@/hooks/use-properties";
 import { reviews as allReviews } from "@/data/reviews";
 import { AMENITY_LABELS } from "@/lib/constants";
 import { formatCurrency } from "@/lib/format";
+import { useT } from "@/lib/i18n";
 import { StarRating } from "@/components/shared/star-rating";
 import { BookingWidget } from "@/components/public/booking-widget";
 import { Button } from "@/components/ui/button";
@@ -29,6 +30,7 @@ const AMENITY_ICONS: Record<string, React.ElementType> = {
 
 export default function PropertyDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
+  const { t } = useT();
   const { getPropertyBySlug, getProperty } = useProperties();
   const [selectedImage, setSelectedImage] = useState(0);
   const property = getPropertyBySlug(id) ?? getProperty(id);
@@ -36,8 +38,8 @@ export default function PropertyDetailPage({ params }: { params: Promise<{ id: s
   if (!property) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center gap-4 pt-16">
-        <h1 className="font-serif text-2xl font-light">Proprietà non trovata</h1>
-        <Button asChild variant="outline"><Link href="/properties">Torna alle proprietà</Link></Button>
+        <h1 className="font-serif text-2xl font-light">{t.propertyDetail.notFound}</h1>
+        <Button asChild variant="outline"><Link href="/properties">{t.propertyDetail.backToProperties}</Link></Button>
       </div>
     );
   }
@@ -50,7 +52,7 @@ export default function PropertyDetailPage({ params }: { params: Promise<{ id: s
         {/* Back */}
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }}>
           <Button asChild variant="ghost" size="sm" className="mb-6 -ml-2 text-xs uppercase tracking-[0.15em]">
-            <Link href="/properties"><ChevronLeft className="mr-1 h-3 w-3" /> Tutte le proprietà</Link>
+            <Link href="/properties"><ChevronLeft className="mr-1 h-3 w-3" /> {t.propertyDetail.allProperties}</Link>
           </Button>
         </motion.div>
 
@@ -124,7 +126,7 @@ export default function PropertyDetailPage({ params }: { params: Promise<{ id: s
           <div className="lg:col-span-2 space-y-10">
             {/* Title & meta */}
             <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }}>
-              <p className="label-luxury">{formatCurrency(property.pricing.basePrice)} / notte</p>
+              <p className="label-luxury">{formatCurrency(property.pricing.basePrice)} {t.propertyDetail.perNight}</p>
               <h1 className="mt-2 font-serif text-2xl font-light tracking-tight sm:text-3xl">
                 {property.name}
               </h1>
@@ -136,9 +138,9 @@ export default function PropertyDetailPage({ params }: { params: Promise<{ id: s
               {/* Stats */}
               <div className="mt-6 grid grid-cols-2 gap-2.5 sm:grid-cols-4">
                 {[
-                  { icon: Users, val: `${property.details.maxGuests} ospiti` },
-                  { icon: BedDouble, val: `${property.details.bedrooms} ${property.details.bedrooms === 1 ? "camera" : "camere"}` },
-                  { icon: Bath, val: `${property.details.bathrooms} ${property.details.bathrooms === 1 ? "bagno" : "bagni"}` },
+                  { icon: Users, val: `${property.details.maxGuests} ${t.propertyDetail.guests}` },
+                  { icon: BedDouble, val: `${property.details.bedrooms} ${property.details.bedrooms === 1 ? t.propertyDetail.bedroom : t.propertyDetail.bedrooms}` },
+                  { icon: Bath, val: `${property.details.bathrooms} ${property.details.bathrooms === 1 ? t.propertyDetail.bathroom : t.propertyDetail.bathrooms}` },
                   { icon: Ruler, val: `${property.details.squareMeters} m²` },
                 ].map((s) => (
                   <div key={s.val} className="flex items-center gap-2 rounded-lg border border-stone-200 bg-white px-3.5 py-2.5 text-sm shadow-card">
@@ -153,7 +155,7 @@ export default function PropertyDetailPage({ params }: { params: Promise<{ id: s
 
             {/* Description */}
             <div>
-              <h2 className="font-serif text-xl font-light">Descrizione</h2>
+              <h2 className="font-serif text-xl font-light">{t.propertyDetail.description}</h2>
               <p className="mt-4 text-[15px] leading-[1.8] text-muted-foreground">{property.description}</p>
             </div>
 
@@ -161,7 +163,7 @@ export default function PropertyDetailPage({ params }: { params: Promise<{ id: s
 
             {/* Amenities */}
             <div>
-              <h2 className="font-serif text-xl font-light">Servizi</h2>
+              <h2 className="font-serif text-xl font-light">{t.propertyDetail.amenities}</h2>
               <div className="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-3">
                 {property.amenities.map((amenity) => {
                   const Icon = AMENITY_ICONS[amenity] ?? Wifi;
@@ -179,15 +181,15 @@ export default function PropertyDetailPage({ params }: { params: Promise<{ id: s
 
             {/* Rules */}
             <div>
-              <h2 className="font-serif text-xl font-light">Regole della Casa</h2>
+              <h2 className="font-serif text-xl font-light">{t.propertyDetail.houseRules}</h2>
               <div className="mt-5 grid gap-2 sm:grid-cols-2">
                 {[
-                  { icon: Clock, l: "Check-in", v: property.rules.checkIn },
-                  { icon: Clock, l: "Check-out", v: property.rules.checkOut },
-                  { icon: Ban, l: "Fumo", v: property.rules.smokingAllowed ? "Consentito" : "Non consentito" },
-                  { icon: PawPrint, l: "Animali", v: property.rules.petsAllowed ? "Ammessi" : "Non ammessi" },
-                  { icon: PartyPopper, l: "Feste", v: property.rules.partiesAllowed ? "Consentite" : "Non consentite" },
-                  { icon: Clock, l: "Soggiorno", v: `${property.rules.minStay}–${property.rules.maxStay} notti` },
+                  { icon: Clock, l: t.propertyDetail.checkIn, v: property.rules.checkIn },
+                  { icon: Clock, l: t.propertyDetail.checkOut, v: property.rules.checkOut },
+                  { icon: Ban, l: t.propertyDetail.smoking, v: property.rules.smokingAllowed ? t.propertyDetail.smokingAllowed : t.propertyDetail.smokingNotAllowed },
+                  { icon: PawPrint, l: t.propertyDetail.pets, v: property.rules.petsAllowed ? t.propertyDetail.petsAllowed : t.propertyDetail.petsNotAllowed },
+                  { icon: PartyPopper, l: t.propertyDetail.parties, v: property.rules.partiesAllowed ? t.propertyDetail.partiesAllowed : t.propertyDetail.partiesNotAllowed },
+                  { icon: Clock, l: t.propertyDetail.stay, v: `${property.rules.minStay}–${property.rules.maxStay} ${t.propertyDetail.nights}` },
                 ].map((r) => (
                   <div key={r.l} className="flex items-center gap-2.5 rounded-lg border border-stone-100 bg-white px-3.5 py-2.5 text-sm">
                     <r.icon className="h-4 w-4 text-muted-foreground" />
@@ -202,12 +204,12 @@ export default function PropertyDetailPage({ params }: { params: Promise<{ id: s
             {/* Reviews */}
             <div>
               <div className="flex items-center justify-between">
-                <h2 className="font-serif text-xl font-light">Recensioni ({propertyReviews.length})</h2>
+                <h2 className="font-serif text-xl font-light">{t.propertyDetail.reviews} ({propertyReviews.length})</h2>
                 <StarRating rating={property.rating} size={16} reviewCount={property.reviewCount} />
               </div>
 
               {propertyReviews.length === 0 ? (
-                <p className="mt-4 text-sm text-muted-foreground">Nessuna recensione ancora.</p>
+                <p className="mt-4 text-sm text-muted-foreground">{t.propertyDetail.noReviews}</p>
               ) : (
                 <div className="mt-6 space-y-3">
                   {propertyReviews.map((review) => (
@@ -224,7 +226,7 @@ export default function PropertyDetailPage({ params }: { params: Promise<{ id: s
                           <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{review.comment}</p>
                           {review.response && (
                             <div className="mt-3 rounded-lg border-l-2 border-terra/20 bg-stone-50 px-4 py-3">
-                              <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-terra">Risposta del proprietario</span>
+                              <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-terra">{t.propertyDetail.ownerResponse}</span>
                               <p className="mt-1 text-sm text-muted-foreground">{review.response}</p>
                             </div>
                           )}
@@ -248,10 +250,10 @@ export default function PropertyDetailPage({ params }: { params: Promise<{ id: s
           <div className="flex items-center justify-between">
             <div>
               <span className="text-lg font-medium">{formatCurrency(property.pricing.basePrice)}</span>
-              <span className="text-sm text-muted-foreground"> / notte</span>
+              <span className="text-sm text-muted-foreground"> {t.propertyDetail.perNight}</span>
             </div>
             <Button asChild className="bg-terra text-white hover:bg-terra-hover text-xs font-semibold uppercase tracking-[0.15em]">
-              <Link href={`/booking/${property.id}`}>Prenota Ora</Link>
+              <Link href={`/booking/${property.id}`}>{t.propertyDetail.bookNow}</Link>
             </Button>
           </div>
         </div>

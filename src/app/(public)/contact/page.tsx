@@ -5,6 +5,7 @@ import Image from "next/image";
 import { motion } from "motion/react";
 import { Mail, Phone, MapPin, Send, CheckCircle2 } from "lucide-react";
 import { siteConfig } from "@/config/site";
+import { useT } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,6 +14,7 @@ import { Textarea } from "@/components/ui/textarea";
 interface FormErrors { name?: string; email?: string; subject?: string; message?: string; }
 
 export default function ContactPage() {
+  const { t } = useT();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [subject, setSubject] = useState("");
@@ -22,12 +24,12 @@ export default function ContactPage() {
 
   const validate = (): boolean => {
     const e: FormErrors = {};
-    if (!name.trim()) e.name = "Il nome è obbligatorio";
-    if (!email.trim()) e.email = "L'email è obbligatoria";
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) e.email = "Inserisci un'email valida";
-    if (!subject.trim()) e.subject = "L'oggetto è obbligatorio";
-    if (!message.trim()) e.message = "Il messaggio è obbligatorio";
-    else if (message.trim().length < 10) e.message = "Almeno 10 caratteri";
+    if (!name.trim()) e.name = t.contact.errors.nameRequired;
+    if (!email.trim()) e.email = t.contact.errors.emailRequired;
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) e.email = t.contact.errors.emailInvalid;
+    if (!subject.trim()) e.subject = t.contact.errors.subjectRequired;
+    if (!message.trim()) e.message = t.contact.errors.messageRequired;
+    else if (message.trim().length < 10) e.message = t.contact.errors.messageMin;
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -50,10 +52,10 @@ export default function ContactPage() {
         <div className="absolute inset-0 bg-forest/45" />
         <div className="noise absolute inset-0" />
         <div className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center">
-          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8, delay: 0.2 }} className="label-luxury !text-terra-light/80">Contatti</motion.p>
-          <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.4 }} className="mt-4 font-serif text-4xl font-light tracking-tight text-white sm:text-5xl lg:text-6xl">Contattaci</motion.h1>
+          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8, delay: 0.2 }} className="label-luxury !text-terra-light/80">{t.contact.heroTag}</motion.p>
+          <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.4 }} className="mt-4 font-serif text-4xl font-light tracking-tight text-white sm:text-5xl lg:text-6xl">{t.contact.heroTitle}</motion.h1>
           <motion.div initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ duration: 0.8, delay: 0.7 }} className="mt-4 h-px w-16 origin-center bg-terra" />
-          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8, delay: 0.9 }} className="mt-6 text-base text-white/45">Hai domande? Siamo qui per aiutarti.</motion.p>
+          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8, delay: 0.9 }} className="mt-6 text-base text-white/45">{t.contact.heroSubtitle}</motion.p>
         </div>
       </div>
 
@@ -63,19 +65,19 @@ export default function ContactPage() {
             {/* Info sidebar */}
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="space-y-8">
               <div>
-                <p className="label-luxury">Informazioni</p>
-                <h2 className="mt-3 font-serif text-2xl font-light">Come Raggiungerci</h2>
+                <p className="label-luxury">{t.contact.infoTag}</p>
+                <h2 className="mt-3 font-serif text-2xl font-light">{t.contact.infoTitle}</h2>
                 <div className="mt-3 h-px w-10 bg-terra/40" />
               </div>
               <p className="text-sm leading-relaxed text-muted-foreground">
-                Puoi contattarci tramite il modulo oppure utilizzando i riferimenti qui sotto. Rispondiamo entro 24 ore.
+                {t.contact.infoDesc}
               </p>
 
               <div className="space-y-px border border-border/60">
                 {[
-                  { icon: Mail, label: "Email", value: siteConfig.company.email, href: `mailto:${siteConfig.company.email}` },
-                  { icon: Phone, label: "Telefono", value: siteConfig.company.phone, href: `tel:${siteConfig.company.phone}` },
-                  { icon: MapPin, label: "Indirizzo", value: siteConfig.company.address },
+                  { icon: Mail, label: t.contact.email, value: siteConfig.company.email, href: `mailto:${siteConfig.company.email}` },
+                  { icon: Phone, label: t.contact.phone, value: siteConfig.company.phone, href: `tel:${siteConfig.company.phone}` },
+                  { icon: MapPin, label: t.contact.address, value: siteConfig.company.address },
                 ].map((item) => (
                   <div key={item.label} className="flex items-start gap-4 border-b border-border/60 last:border-b-0 p-5">
                     <item.icon className="mt-0.5 h-4 w-4 shrink-0 text-terra" />
@@ -94,7 +96,7 @@ export default function ContactPage() {
               <div className="flex h-48 items-center justify-center border border-border/60 bg-forest">
                 <div className="text-center">
                   <MapPin className="mx-auto h-6 w-6 text-terra/30" />
-                  <p className="mt-2 text-[10px] uppercase tracking-[0.3em] text-canvas/30">Mappa interattiva</p>
+                  <p className="mt-2 text-[10px] uppercase tracking-[0.3em] text-canvas/30">{t.contact.map}</p>
                 </div>
               </div>
             </motion.div>
@@ -107,44 +109,44 @@ export default function ContactPage() {
                     className="mx-auto flex h-16 w-16 items-center justify-center bg-forest">
                     <CheckCircle2 className="h-8 w-8 text-terra" />
                   </motion.div>
-                  <h3 className="mt-8 font-serif text-2xl font-light">Messaggio Inviato</h3>
+                  <h3 className="mt-8 font-serif text-2xl font-light">{t.contact.sent}</h3>
                   <div className="mx-auto mt-3 h-px w-10 bg-terra/40" />
-                  <p className="mx-auto mt-6 max-w-md text-sm text-muted-foreground">Grazie per averci contattato. Ti risponderemo il prima possibile.</p>
+                  <p className="mx-auto mt-6 max-w-md text-sm text-muted-foreground">{t.contact.sentDesc}</p>
                   <Button className="mt-8 text-xs uppercase tracking-[0.15em]" variant="outline" onClick={() => { setSubmitted(false); setName(""); setEmail(""); setSubject(""); setMessage(""); setErrors({}); }}>
-                    Invia un altro messaggio
+                    {t.contact.sendAnother}
                   </Button>
                 </div>
               ) : (
                 <div className="border border-border/60">
                   <div className="border-b border-border/60 px-6 py-5">
-                    <h2 className="font-serif text-xl font-light">Scrivici un Messaggio</h2>
+                    <h2 className="font-serif text-xl font-light">{t.contact.formTitle}</h2>
                   </div>
                   <div className="p-6">
                     <form onSubmit={handleSubmit} className="space-y-5">
                       <div className="grid gap-5 sm:grid-cols-2">
                         <div className="space-y-2">
-                          <Label htmlFor="name" className="text-[10px] uppercase tracking-[0.2em]">Nome e Cognome <span className="text-destructive">*</span></Label>
+                          <Label htmlFor="name" className="text-[10px] uppercase tracking-[0.2em]">{t.contact.name} <span className="text-destructive">*</span></Label>
                           <Input id="name" placeholder="Mario Rossi" value={name} onChange={(e) => { setName(e.target.value); if (errors.name) setErrors((p) => ({ ...p, name: undefined })); }} aria-invalid={!!errors.name} />
                           {errors.name && <p className="text-xs text-destructive">{errors.name}</p>}
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="email" className="text-[10px] uppercase tracking-[0.2em]">Email <span className="text-destructive">*</span></Label>
+                          <Label htmlFor="email" className="text-[10px] uppercase tracking-[0.2em]">{t.contact.emailField} <span className="text-destructive">*</span></Label>
                           <Input id="email" type="email" placeholder="mario@esempio.it" value={email} onChange={(e) => { setEmail(e.target.value); if (errors.email) setErrors((p) => ({ ...p, email: undefined })); }} aria-invalid={!!errors.email} />
                           {errors.email && <p className="text-xs text-destructive">{errors.email}</p>}
                         </div>
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="subject" className="text-[10px] uppercase tracking-[0.2em]">Oggetto <span className="text-destructive">*</span></Label>
+                        <Label htmlFor="subject" className="text-[10px] uppercase tracking-[0.2em]">{t.contact.subject} <span className="text-destructive">*</span></Label>
                         <Input id="subject" placeholder="Informazioni su una proprietà" value={subject} onChange={(e) => { setSubject(e.target.value); if (errors.subject) setErrors((p) => ({ ...p, subject: undefined })); }} aria-invalid={!!errors.subject} />
                         {errors.subject && <p className="text-xs text-destructive">{errors.subject}</p>}
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="message" className="text-[10px] uppercase tracking-[0.2em]">Messaggio <span className="text-destructive">*</span></Label>
+                        <Label htmlFor="message" className="text-[10px] uppercase tracking-[0.2em]">{t.contact.message} <span className="text-destructive">*</span></Label>
                         <Textarea id="message" placeholder="Scrivi qui il tuo messaggio..." rows={6} value={message} onChange={(e) => { setMessage(e.target.value); if (errors.message) setErrors((p) => ({ ...p, message: undefined })); }} aria-invalid={!!errors.message} className="min-h-[150px]" />
                         {errors.message && <p className="text-xs text-destructive">{errors.message}</p>}
                       </div>
                       <Button type="submit" className="gap-2 bg-forest text-canvas hover:bg-forest-light text-xs font-medium uppercase tracking-[0.2em] sm:w-auto w-full" size="lg">
-                        <Send className="h-3.5 w-3.5" /> Invia Messaggio
+                        <Send className="h-3.5 w-3.5" /> {t.contact.send}
                       </Button>
                     </form>
                   </div>

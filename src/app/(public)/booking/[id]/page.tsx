@@ -6,22 +6,24 @@ import { motion, AnimatePresence } from "motion/react";
 import { CalendarDays, Users, CreditCard, CheckCircle2, ChevronLeft, ChevronRight, Lock, Shield } from "lucide-react";
 import { useProperties } from "@/hooks/use-properties";
 import { formatCurrency } from "@/lib/format";
+import { useT } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 
-const STEPS = [
-  { label: "Dettagli", icon: CalendarDays },
-  { label: "Pagamento", icon: CreditCard },
-  { label: "Conferma", icon: CheckCircle2 },
-];
-
 export default function BookingPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
+  const { t } = useT();
   const { getProperty } = useProperties();
   const property = getProperty(id);
   const [step, setStep] = useState(0);
+
+  const STEPS = [
+    { label: t.bookingPage.steps.details, icon: CalendarDays },
+    { label: t.bookingPage.steps.payment, icon: CreditCard },
+    { label: t.bookingPage.steps.confirm, icon: CheckCircle2 },
+  ];
 
   const nights = 3;
   const guests = 2;
@@ -36,8 +38,8 @@ export default function BookingPage({ params }: { params: Promise<{ id: string }
   if (!property) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center gap-4 pt-16">
-        <h1 className="font-serif text-2xl font-light">Proprietà non trovata</h1>
-        <Button asChild variant="outline"><Link href="/properties">Torna alle proprietà</Link></Button>
+        <h1 className="font-serif text-2xl font-light">{t.bookingPage.notFound}</h1>
+        <Button asChild variant="outline"><Link href="/properties">{t.bookingPage.backToProperties}</Link></Button>
       </div>
     );
   }
@@ -46,10 +48,10 @@ export default function BookingPage({ params }: { params: Promise<{ id: string }
     <div className="min-h-screen pt-28 pb-20">
       <div className="mx-auto max-w-3xl px-6 sm:px-8">
         <Button asChild variant="ghost" size="sm" className="mb-8 -ml-2 text-xs uppercase tracking-[0.15em]">
-          <Link href={`/properties/${property.slug}`}><ChevronLeft className="mr-1 h-3 w-3" />Torna alla proprietà</Link>
+          <Link href={`/properties/${property.slug}`}><ChevronLeft className="mr-1 h-3 w-3" />{t.bookingPage.backToProperty}</Link>
         </Button>
 
-        <p className="label-luxury">Prenotazione</p>
+        <p className="label-luxury">{t.bookingPage.tag}</p>
         <h1 className="mt-3 font-serif text-2xl font-light tracking-tight sm:text-3xl">{property.name}</h1>
         <div className="mt-3 h-px w-12 bg-terra/40" />
 
@@ -79,37 +81,37 @@ export default function BookingPage({ params }: { params: Promise<{ id: string }
             <motion.div key="s0" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.3 }} className="mt-10 space-y-6">
               <div className="border border-border/60">
                 <div className="border-b border-border/60 px-6 py-4">
-                  <h2 className="font-serif text-lg font-light">Dettagli del Soggiorno</h2>
+                  <h2 className="font-serif text-lg font-light">{t.bookingPage.stayDetails}</h2>
                 </div>
                 <div className="space-y-4 p-6">
                   <div className="grid gap-4 sm:grid-cols-2">
                     <div className="space-y-2">
-                      <Label className="text-[10px] uppercase tracking-[0.2em]">Check-in</Label>
+                      <Label className="text-[10px] uppercase tracking-[0.2em]">{t.bookingPage.checkIn}</Label>
                       <Input type="date" defaultValue="2026-03-15" />
                     </div>
                     <div className="space-y-2">
-                      <Label className="text-[10px] uppercase tracking-[0.2em]">Check-out</Label>
+                      <Label className="text-[10px] uppercase tracking-[0.2em]">{t.bookingPage.checkOut}</Label>
                       <Input type="date" defaultValue="2026-03-18" />
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-[10px] uppercase tracking-[0.2em]">Numero ospiti</Label>
+                    <Label className="text-[10px] uppercase tracking-[0.2em]">{t.bookingPage.guestCount}</Label>
                     <Input type="number" defaultValue={2} min={1} max={property.details.maxGuests} />
                   </div>
                   <Separator />
                   <div className="space-y-2 text-sm">
-                    <div className="flex justify-between"><span className="text-muted-foreground">{formatCurrency(property.pricing.basePrice)} x {nights} notti</span><span>{formatCurrency(baseTotal)}</span></div>
-                    <div className="flex justify-between"><span className="text-muted-foreground">Pulizia</span><span>{formatCurrency(cleaningFee)}</span></div>
-                    <div className="flex justify-between"><span className="text-muted-foreground">Servizio</span><span>{formatCurrency(serviceFee)}</span></div>
-                    <div className="flex justify-between"><span className="text-muted-foreground">Tasse</span><span>{formatCurrency(taxes)}</span></div>
+                    <div className="flex justify-between"><span className="text-muted-foreground">{formatCurrency(property.pricing.basePrice)} x {nights} {t.bookingPage.nights}</span><span>{formatCurrency(baseTotal)}</span></div>
+                    <div className="flex justify-between"><span className="text-muted-foreground">{t.bookingPage.cleaning}</span><span>{formatCurrency(cleaningFee)}</span></div>
+                    <div className="flex justify-between"><span className="text-muted-foreground">{t.bookingPage.service}</span><span>{formatCurrency(serviceFee)}</span></div>
+                    <div className="flex justify-between"><span className="text-muted-foreground">{t.bookingPage.taxes}</span><span>{formatCurrency(taxes)}</span></div>
                     <Separator />
-                    <div className="flex justify-between text-base font-medium"><span>Totale</span><span>{formatCurrency(total)}</span></div>
+                    <div className="flex justify-between text-base font-medium"><span>{t.bookingPage.total}</span><span>{formatCurrency(total)}</span></div>
                   </div>
                 </div>
               </div>
               <div className="flex justify-end">
                 <Button onClick={() => setStep(1)} className="gap-2 bg-forest text-canvas hover:bg-forest-light text-xs uppercase tracking-[0.2em]">
-                  Continua <ChevronRight className="h-3.5 w-3.5" />
+                  {t.bookingPage.continue} <ChevronRight className="h-3.5 w-3.5" />
                 </Button>
               </div>
             </motion.div>
@@ -120,26 +122,26 @@ export default function BookingPage({ params }: { params: Promise<{ id: string }
               <div className="border border-border/60">
                 <div className="flex items-center gap-2 border-b border-border/60 px-6 py-4">
                   <Lock className="h-4 w-4 text-terra" />
-                  <h2 className="font-serif text-lg font-light">Pagamento Sicuro</h2>
+                  <h2 className="font-serif text-lg font-light">{t.bookingPage.securePayment}</h2>
                 </div>
                 <div className="space-y-4 p-6">
-                  <div className="space-y-2"><Label className="text-[10px] uppercase tracking-[0.2em]">Nome sulla carta</Label><Input placeholder="Mario Rossi" /></div>
-                  <div className="space-y-2"><Label className="text-[10px] uppercase tracking-[0.2em]">Numero carta</Label><Input placeholder="4242 4242 4242 4242" /></div>
+                  <div className="space-y-2"><Label className="text-[10px] uppercase tracking-[0.2em]">{t.bookingPage.cardName}</Label><Input placeholder="Mario Rossi" /></div>
+                  <div className="space-y-2"><Label className="text-[10px] uppercase tracking-[0.2em]">{t.bookingPage.cardNumber}</Label><Input placeholder="4242 4242 4242 4242" /></div>
                   <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2"><Label className="text-[10px] uppercase tracking-[0.2em]">Scadenza</Label><Input placeholder="MM/AA" /></div>
-                    <div className="space-y-2"><Label className="text-[10px] uppercase tracking-[0.2em]">CVC</Label><Input placeholder="123" /></div>
+                    <div className="space-y-2"><Label className="text-[10px] uppercase tracking-[0.2em]">{t.bookingPage.expiry}</Label><Input placeholder="MM/AA" /></div>
+                    <div className="space-y-2"><Label className="text-[10px] uppercase tracking-[0.2em]">{t.bookingPage.cvc}</Label><Input placeholder="123" /></div>
                   </div>
                   <div className="flex items-center gap-2 bg-canvas-dark p-3.5 text-xs text-muted-foreground">
                     <Shield className="h-4 w-4 shrink-0 text-terra" />
-                    <span>Crittografia SSL a 256 bit. Non memorizziamo i dati della tua carta.</span>
+                    <span>{t.bookingPage.securityNote}</span>
                   </div>
                   <Separator />
-                  <div className="flex justify-between text-base font-medium"><span>Totale da pagare</span><span>{formatCurrency(total)}</span></div>
+                  <div className="flex justify-between text-base font-medium"><span>{t.bookingPage.totalToPay}</span><span>{formatCurrency(total)}</span></div>
                 </div>
               </div>
               <div className="flex justify-between">
-                <Button variant="outline" onClick={() => setStep(0)} className="gap-2 text-xs uppercase tracking-[0.15em]"><ChevronLeft className="h-3.5 w-3.5" />Indietro</Button>
-                <Button onClick={() => setStep(2)} className="gap-2 bg-forest text-canvas hover:bg-forest-light text-xs uppercase tracking-[0.2em]">Conferma e Paga <CreditCard className="h-3.5 w-3.5" /></Button>
+                <Button variant="outline" onClick={() => setStep(0)} className="gap-2 text-xs uppercase tracking-[0.15em]"><ChevronLeft className="h-3.5 w-3.5" />{t.bookingPage.back}</Button>
+                <Button onClick={() => setStep(2)} className="gap-2 bg-forest text-canvas hover:bg-forest-light text-xs uppercase tracking-[0.2em]">{t.bookingPage.confirmPay} <CreditCard className="h-3.5 w-3.5" /></Button>
               </div>
             </motion.div>
           )}
@@ -156,20 +158,20 @@ export default function BookingPage({ params }: { params: Promise<{ id: string }
                   <CheckCircle2 className="h-8 w-8 text-terra" />
                 </motion.div>
 
-                <h2 className="mt-8 font-serif text-2xl font-light">Prenotazione Confermata</h2>
+                <h2 className="mt-8 font-serif text-2xl font-light">{t.bookingPage.confirmed}</h2>
                 <div className="mx-auto mt-3 h-px w-12 bg-terra/40" />
                 <p className="mx-auto mt-6 max-w-md text-sm text-muted-foreground">
-                  La tua prenotazione per {property.name} è stata confermata. Riceverai un&apos;email di conferma a breve.
+                  {t.bookingPage.confirmEmail}
                 </p>
 
                 <div className="mx-auto mt-10 max-w-sm border border-border/60">
                   <div className="space-y-0 text-sm">
                     {[
-                      { l: "Proprietà", v: property.name },
-                      { l: "Check-in", v: checkIn },
-                      { l: "Check-out", v: checkOut },
-                      { l: "Ospiti", v: String(guests) },
-                      { l: "Notti", v: String(nights) },
+                      { l: t.bookingPage.property, v: property.name },
+                      { l: t.bookingPage.checkIn, v: checkIn },
+                      { l: t.bookingPage.checkOut, v: checkOut },
+                      { l: t.bookingPage.guestsLabel, v: String(guests) },
+                      { l: t.bookingPage.nightsLabel, v: String(nights) },
                     ].map((r) => (
                       <div key={r.l} className="flex justify-between border-b border-border/60 last:border-b-0 px-5 py-3">
                         <span className="text-muted-foreground">{r.l}</span>
@@ -177,7 +179,7 @@ export default function BookingPage({ params }: { params: Promise<{ id: string }
                       </div>
                     ))}
                     <div className="flex justify-between border-t border-border bg-canvas-dark/50 px-5 py-3 font-medium">
-                      <span>Totale</span>
+                      <span>{t.bookingPage.total}</span>
                       <span>{formatCurrency(total)}</span>
                     </div>
                   </div>
@@ -185,10 +187,10 @@ export default function BookingPage({ params }: { params: Promise<{ id: string }
 
                 <div className="mt-10 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
                   <Button asChild className="bg-forest text-canvas hover:bg-forest-light text-xs uppercase tracking-[0.2em]">
-                    <Link href="/properties">Esplora Altre Proprietà</Link>
+                    <Link href="/properties">{t.bookingPage.exploreMore}</Link>
                   </Button>
                   <Button asChild variant="outline" className="text-xs uppercase tracking-[0.15em]">
-                    <Link href="/">Torna alla Home</Link>
+                    <Link href="/">{t.bookingPage.backHome}</Link>
                   </Button>
                 </div>
               </div>

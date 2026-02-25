@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { reviews } from "@/data/reviews";
 import { properties } from "@/data/properties";
 import { Star } from "lucide-react";
+import { useT } from "@/lib/i18n";
 
 const selectedReviews = [reviews[0], reviews[2], reviews[7], reviews[9]];
 
@@ -13,6 +14,7 @@ function getPropertyName(propertyId: string): string {
 }
 
 export function Testimonials() {
+  const { t } = useT();
   const [active, setActive] = useState(0);
 
   useEffect(() => {
@@ -28,7 +30,7 @@ export function Testimonials() {
       <div className="noise absolute inset-0" />
 
       <div className="relative z-10 mx-auto max-w-3xl px-6 sm:px-8 text-center">
-        <p className="label-luxury">Testimonianze</p>
+        <p className="label-luxury">{t.testimonials.tag}</p>
 
         {/* Quote mark */}
         <div className="mt-6 font-serif text-[7rem] leading-none text-terra/10 select-none sm:text-[10rem]">

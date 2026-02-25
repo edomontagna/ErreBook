@@ -8,14 +8,15 @@ import { motion } from "motion/react";
 import { MapPin, Users, SlidersHorizontal, X, Search, BedDouble, Bath, Star, ArrowRight } from "lucide-react";
 import { useProperties } from "@/hooks/use-properties";
 import { formatCurrency } from "@/lib/format";
+import { useT } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-const TYPE_LABELS: Record<string, string> = { apartment: "Appartamento", house: "Casa", studio: "Studio", villa: "Villa" };
-
 function PropertiesContent() {
+  const { t } = useT();
+  const TYPE_LABELS = t.properties.types;
   const searchParams = useSearchParams();
   const [cityFilter, setCityFilter] = useState(searchParams.get("city") || "");
   const [typeFilter, setTypeFilter] = useState("");
@@ -54,9 +55,9 @@ function PropertiesContent() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <p className="label-luxury">Collezione</p>
+          <p className="label-luxury">{t.properties.tag}</p>
           <h1 className="mt-3 font-serif text-3xl font-light tracking-tight sm:text-4xl">
-            Le Nostre Proprietà
+            {t.properties.title}
           </h1>
           <div className="mt-3 h-px w-12 bg-terra/40" />
         </motion.div>
@@ -64,12 +65,12 @@ function PropertiesContent() {
         {/* Mobile filter toggle */}
         <div className="mt-8 flex items-center gap-3 md:hidden">
           <Button variant="outline" onClick={() => setShowFilters(!showFilters)} className="gap-2 text-xs">
-            <SlidersHorizontal className="h-3.5 w-3.5" /> Filtri
+            <SlidersHorizontal className="h-3.5 w-3.5" /> {t.properties.filters}
             {activeFilters > 0 && <Badge className="ml-1 h-5 w-5 rounded-full p-0 text-xs">{activeFilters}</Badge>}
           </Button>
           {activeFilters > 0 && (
             <Button variant="ghost" size="sm" onClick={clearFilters} className="text-xs">
-              <X className="mr-1 h-3 w-3" /> Cancella
+              <X className="mr-1 h-3 w-3" /> {t.properties.clear}
             </Button>
           )}
         </div>
@@ -85,45 +86,45 @@ function PropertiesContent() {
         >
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-5 md:items-end">
             <div className="space-y-1.5">
-              <label className="text-[10px] font-semibold uppercase tracking-[0.2em] text-forest/40">Destinazione</label>
+              <label className="text-[10px] font-semibold uppercase tracking-[0.2em] text-forest/40">{t.properties.destination}</label>
               <Select value={cityFilter} onValueChange={setCityFilter}>
-                <SelectTrigger className="border-stone-200"><SelectValue placeholder="Tutte le città" /></SelectTrigger>
-                <SelectContent><SelectItem value="all">Tutte le città</SelectItem>{cities.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
+                <SelectTrigger className="border-stone-200"><SelectValue placeholder={t.properties.allCities} /></SelectTrigger>
+                <SelectContent><SelectItem value="all">{t.properties.allCities}</SelectItem>{cities.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
               </Select>
             </div>
             <div className="space-y-1.5">
-              <label className="text-[10px] font-semibold uppercase tracking-[0.2em] text-forest/40">Tipologia</label>
+              <label className="text-[10px] font-semibold uppercase tracking-[0.2em] text-forest/40">{t.properties.type}</label>
               <Select value={typeFilter} onValueChange={setTypeFilter}>
-                <SelectTrigger className="border-stone-200"><SelectValue placeholder="Tutte" /></SelectTrigger>
-                <SelectContent><SelectItem value="all">Tutte</SelectItem>{Object.entries(TYPE_LABELS).map(([v, l]) => <SelectItem key={v} value={v}>{l}</SelectItem>)}</SelectContent>
+                <SelectTrigger className="border-stone-200"><SelectValue placeholder={t.properties.allTypes} /></SelectTrigger>
+                <SelectContent><SelectItem value="all">{t.properties.allTypes}</SelectItem>{Object.entries(TYPE_LABELS).map(([v, l]) => <SelectItem key={v} value={v}>{l}</SelectItem>)}</SelectContent>
               </Select>
             </div>
             <div className="space-y-1.5">
-              <label className="text-[10px] font-semibold uppercase tracking-[0.2em] text-forest/40">Ospiti min.</label>
-              <Input type="number" min={1} max={10} placeholder="N." value={guestsFilter} onChange={(e) => setGuestsFilter(e.target.value)} className="border-stone-200" />
+              <label className="text-[10px] font-semibold uppercase tracking-[0.2em] text-forest/40">{t.properties.minGuests}</label>
+              <Input type="number" min={1} max={10} placeholder={t.search.guestsPlaceholder} value={guestsFilter} onChange={(e) => setGuestsFilter(e.target.value)} className="border-stone-200" />
             </div>
             <div className="space-y-1.5">
-              <label className="text-[10px] font-semibold uppercase tracking-[0.2em] text-forest/40">Prezzo / notte</label>
+              <label className="text-[10px] font-semibold uppercase tracking-[0.2em] text-forest/40">{t.properties.pricePerNight}</label>
               <Select value={priceRange} onValueChange={setPriceRange}>
-                <SelectTrigger className="border-stone-200"><SelectValue placeholder="Qualsiasi" /></SelectTrigger>
-                <SelectContent><SelectItem value="all">Qualsiasi</SelectItem><SelectItem value="0-70">Fino a €70</SelectItem><SelectItem value="70-100">€70 – €100</SelectItem><SelectItem value="100-150">€100 – €150</SelectItem><SelectItem value="150-999">Oltre €150</SelectItem></SelectContent>
+                <SelectTrigger className="border-stone-200"><SelectValue placeholder={t.properties.any} /></SelectTrigger>
+                <SelectContent><SelectItem value="all">{t.properties.any}</SelectItem><SelectItem value="0-70">{t.properties.upTo70}</SelectItem><SelectItem value="70-100">{t.properties.range70_100}</SelectItem><SelectItem value="100-150">{t.properties.range100_150}</SelectItem><SelectItem value="150-999">{t.properties.over150}</SelectItem></SelectContent>
               </Select>
             </div>
             <div className="hidden md:block">
-              {activeFilters > 0 && <Button variant="ghost" size="sm" onClick={clearFilters} className="w-full gap-1 text-xs"><X className="h-3 w-3" /> Reset</Button>}
+              {activeFilters > 0 && <Button variant="ghost" size="sm" onClick={clearFilters} className="w-full gap-1 text-xs"><X className="h-3 w-3" /> {t.properties.reset}</Button>}
             </div>
           </div>
         </motion.div>
 
-        <p className="mt-6 text-sm text-muted-foreground">{filtered.length} proprietà trovate</p>
+        <p className="mt-6 text-sm text-muted-foreground">{filtered.length} {t.properties.found}</p>
 
         {/* Grid */}
         {filtered.length === 0 ? (
           <div className="mt-20 flex flex-col items-center text-center">
             <Search className="h-10 w-10 text-muted-foreground/25" />
-            <h3 className="mt-4 font-serif text-lg font-light">Nessun risultato</h3>
-            <p className="mt-1 text-sm text-muted-foreground">Prova a modificare i filtri.</p>
-            <Button variant="outline" className="mt-4 text-xs" onClick={clearFilters}>Rimuovi filtri</Button>
+            <h3 className="mt-4 font-serif text-lg font-light">{t.properties.noResults}</h3>
+            <p className="mt-1 text-sm text-muted-foreground">{t.properties.noResultsHint}</p>
+            <Button variant="outline" className="mt-4 text-xs" onClick={clearFilters}>{t.properties.removeFilters}</Button>
           </div>
         ) : (
           <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -158,7 +159,7 @@ function PropertiesContent() {
                     {/* Type */}
                     <div className="absolute left-3 top-3">
                       <span className="rounded-sm bg-forest/80 backdrop-blur-sm px-2 py-0.5 text-[9px] font-semibold uppercase tracking-[0.15em] text-white">
-                        {TYPE_LABELS[property.type]}
+                        {TYPE_LABELS[property.type as keyof typeof TYPE_LABELS]}
                       </span>
                     </div>
                   </div>
@@ -180,10 +181,10 @@ function PropertiesContent() {
                     <div className="mt-3 flex items-center justify-between">
                       <div>
                         <span className="text-lg font-medium text-forest">{formatCurrency(property.pricing.basePrice)}</span>
-                        <span className="text-xs text-muted-foreground"> / notte</span>
+                        <span className="text-xs text-muted-foreground"> {t.properties.perNight}</span>
                       </div>
                       <span className="flex items-center gap-1 text-[10px] font-semibold uppercase tracking-[0.15em] text-terra opacity-0 transition-opacity group-hover:opacity-100">
-                        Dettagli <ArrowRight className="h-2.5 w-2.5" />
+                        {t.properties.details} <ArrowRight className="h-2.5 w-2.5" />
                       </span>
                     </div>
                   </div>
